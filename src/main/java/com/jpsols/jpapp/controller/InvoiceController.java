@@ -29,7 +29,7 @@ public class InvoiceController {
     @Autowired
     private PaymentRepository repository;
     @GetMapping(value = "/customers/invoices/invsCust{id}", produces = MediaType.APPLICATION_PDF_VALUE)
-    public ResponseEntity<byte[]> downloadInvoice(@PathVariable Integer id) throws FileNotFoundException, JRException {
+    public ResponseEntity<byte[]> downloadInvoices(@PathVariable Integer id) throws FileNotFoundException, JRException {
 
         List<Payment> payments= repository.findPaymentsByPid(id);
         JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(payments);
@@ -38,6 +38,34 @@ public class InvoiceController {
         parameters.put("createdby","JPSOLS");
 
         File file = ResourceUtils.getFile("classpath:invoices.jrxml");
+
+        JasperReport jasperReport = JasperCompileManager
+                .compileReport(new FileInputStream(file.getAbsolutePath()));
+
+        JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, dataSource);
+
+        byte data[] = JasperExportManager.exportReportToPdf(jasperPrint);
+
+        System.err.println(data);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Disposition", "inline; filename=citiesreport.pdf");
+
+
+        return ResponseEntity.ok().headers(headers).contentType(MediaType.APPLICATION_PDF).body(data);
+
+    }
+
+    @GetMapping(value = "/customers/invoices/invs{id}", produces = MediaType.APPLICATION_PDF_VALUE)
+    public ResponseEntity<byte[]> downloadInvoiceById(@PathVariable Integer id) throws FileNotFoundException, JRException {
+
+        List<Payment> payments= repository.findInvoiceByPid(id);
+        JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(payments);
+
+        Map<String,Object> parameters=new HashMap<>();
+        parameters.put("createdby","JPSOLS");
+
+        File file = ResourceUtils.getFile("classpath:invoiceById.jrxml");
 
         JasperReport jasperReport = JasperCompileManager
                 .compileReport(new FileInputStream(file.getAbsolutePath()));

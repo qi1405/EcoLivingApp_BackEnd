@@ -90,9 +90,9 @@ public class CustomerController {
     @GetMapping("/customer/{id}")
     @PreAuthorize("hasRole('USER')")
     public List<CustomerResponse> getSingleCustomerByID(@PathVariable Integer id) {
-        String sql = "SELECT ID, CustomerNumber, Name, Surname, Area, City, Address, PhoneNumber, CustomerTypeID, Enabled, DateCreated\n" +
+        String sql = "SELECT Id, CustomerNumber, Name, Surname, Area, City, Address, PhoneNumber, CustomerTypeID, Enabled, DateCreated\n" +
                 "                FROM TblCustomer\n" +
-                "                      WHERE ID =" + id + ""
+                "                      WHERE Id =" + id + ""
                 ;
         List<CustomerResponse> result = jdbcTemplate.query(sql, new BeanPropertyRowMapper(CustomerResponse.class));
 
