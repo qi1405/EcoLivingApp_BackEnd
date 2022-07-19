@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import com.jpsols.jpapp.entity.Payment;
 import org.springframework.util.ResourceUtils;
@@ -29,6 +30,7 @@ public class InvoiceController {
     @Autowired
     private PaymentRepository repository;
     @GetMapping(value = "/customers/invoices/invsCust{id}", produces = MediaType.APPLICATION_PDF_VALUE)
+    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<byte[]> downloadInvoices(@PathVariable Integer id) throws FileNotFoundException, JRException {
 
         List<Payment> payments= repository.findPaymentsByPid(id);
@@ -57,6 +59,7 @@ public class InvoiceController {
     }
 
     @GetMapping(value = "/customers/invoices/invs{id}", produces = MediaType.APPLICATION_PDF_VALUE)
+    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<byte[]> downloadInvoiceById(@PathVariable Integer id) throws FileNotFoundException, JRException {
 
         List<Payment> payments= repository.findInvoiceByPid(id);
