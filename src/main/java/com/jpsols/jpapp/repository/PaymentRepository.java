@@ -13,14 +13,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import java.util.List;
 
 public interface PaymentRepository extends JpaRepository<Payment, Integer> {
-        @Query (value = "SELECT p.invoiceNumber, p.customerNumber, p.paied, p.Id, p.credit\n" +
+        @Query (value = "SELECT p.invoiceNumber, p.customerNumber, p.paied, p.Id, p.credit, monthOfPayment, dateOfPayment, PaymentPeriod, Printed, IsInvoice, Operator, debit\n" +
                 "FROM TblCustomer c OUTER APPLY\n" +
                 "     (SELECT top 6 p.*\n" +
                 "      FROM TblPayments p\n" +
                 "      WHERE c.CustomerNumber = p.CustomerNumber\n" +
                 "      ORDER BY p.Id DESC \n" +
-                "     ) p WHERE c.ID = :id\n" +
-                "group by p.invoiceNumber, p.customerNumber, p.paied, p.Id, p.credit", nativeQuery = true)
+                "     ) p WHERE c.ID = :id", nativeQuery = true)
             List<Payment> findPaymentsByPid (@Param("id") Integer id);
 
     @Query (value = "SELECT invoiceNumber, customerNumber, monthOfPayment, dateOfPayment, PaymentPeriod, Printed, paied, IsInvoice, Operator, id, debit, credit\n" +
