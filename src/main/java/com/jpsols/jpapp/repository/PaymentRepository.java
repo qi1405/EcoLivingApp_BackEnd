@@ -19,7 +19,8 @@ public interface PaymentRepository extends JpaRepository<Payment, Integer> {
                 "      FROM TblPayments p\n" +
                 "      WHERE c.CustomerNumber = p.CustomerNumber\n" +
                 "      ORDER BY p.Id DESC \n" +
-                "     ) p WHERE c.ID = :id", nativeQuery = true)
+                "     ) p WHERE c.ID = :id\n" +
+                "group by p.invoiceNumber, p.customerNumber, p.paied, p.Id, p.credit", nativeQuery = true)
             List<Payment> findPaymentsByPid (@Param("id") Integer id);
 
     @Query (value = "SELECT invoiceNumber, customerNumber, monthOfPayment, dateOfPayment, PaymentPeriod, Printed, paied, IsInvoice, Operator, id, debit, credit\n" +
