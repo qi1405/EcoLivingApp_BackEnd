@@ -61,7 +61,7 @@ public class InvoiceController {
 
     @GetMapping(value = "/customers/invoices/invs{id}", produces = MediaType.APPLICATION_PDF_VALUE)
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<byte[]> downloadInvoiceById(@PathVariable Integer id) throws FileNotFoundException, JRException {
+    public ResponseEntity<byte[]> downloadInvoiceById(@PathVariable Integer id) throws IOException, JRException {
 
         List<Payment> payments= repository.findInvoiceByPid(id);
         JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(payments);
@@ -69,10 +69,11 @@ public class InvoiceController {
         Map<String,Object> parameters=new HashMap<>();
         parameters.put("createdby","JPSOLS");
 
-        File file = ResourceUtils.getFile("classpath:invoiceById.jrxml");
+        ClassPathResource classPathResource = new ClassPathResource("invoiceById.jrxml");
+        InputStream inputStream = classPathResource.getInputStream();
 
         JasperReport jasperReport = JasperCompileManager
-                .compileReport(new FileInputStream(file.getAbsolutePath()));
+                .compileReport(inputStream);
 
         JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, dataSource);
 
