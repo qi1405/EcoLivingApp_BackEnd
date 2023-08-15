@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class TestController {
     @GetMapping("/all")
     public String allAccess() {
-        return "Public Content. The page is a sample and for testing purposes. Data shown here are not representing real cases. Sign up/Register is disabled. User credentials are: User: user; Password: user0105";
+        return "Public Content. The page is a sample and for testing purposes. Data shown here are not representing real cases. Sign up/Register is disabled. User credentials are: User: user; Password: useruser";
     }
 
     @GetMapping("/user")
